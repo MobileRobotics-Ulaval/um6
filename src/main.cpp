@@ -222,6 +222,7 @@ void publishMsgs(um6::Registers& r, ros::NodeHandle* imu_nh, sensor_msgs::Imu& i
     }
     else
     {
+      // PB: Change the x axis to negative so NED is right hand 
       imu_msg.orientation.w = r.quat.get_scaled(0);
       imu_msg.orientation.x = r.quat.get_scaled(1);
       imu_msg.orientation.y = r.quat.get_scaled(2);
@@ -231,7 +232,7 @@ void publishMsgs(um6::Registers& r, ros::NodeHandle* imu_nh, sensor_msgs::Imu& i
       imu_msg.angular_velocity.y = r.gyro.get_scaled(1);
       imu_msg.angular_velocity.z = r.gyro.get_scaled(2);
 
-      imu_msg.linear_acceleration.x = r.accel.get_scaled(0);
+      imu_msg.linear_acceleration.x = -r.accel.get_scaled(0);
       imu_msg.linear_acceleration.y = r.accel.get_scaled(1);
       imu_msg.linear_acceleration.z = r.accel.get_scaled(2);
     }
@@ -243,12 +244,12 @@ void publishMsgs(um6::Registers& r, ros::NodeHandle* imu_nh, sensor_msgs::Imu& i
   {
     geometry_msgs::Vector3Stamped mag_msg;
     mag_msg.header = imu_msg.header;
-
+    
     if (tf_ned_to_enu)
     {
-      mag_msg.vector.x = r.mag.get_scaled(1);
+      mag_msg.vector.x = -r.mag.get_scaled(1);
       mag_msg.vector.y = r.mag.get_scaled(0);
-      mag_msg.vector.z = -r.mag.get_scaled(2);
+      mag_msg.vector.z = r.mag.get_scaled(2);
     }
     else
     {
